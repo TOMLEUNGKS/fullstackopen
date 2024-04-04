@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import SearchFilter from '../components/SearchFilter'
-import PersonForm from '../../part2a/components/PersonForm'
-import Persons from '../../part2a/components/Persons'
+import PersonForm from '../components/PersonForm'
+import Persons from '../components/Persons'
 import axios from 'axios'
 
 const App = () => {
@@ -15,15 +15,12 @@ const App = () => {
   }
 
   useEffect(() => {
-    console.log('effect')    
     axios      
       .get('http://localhost:3001/persons')      
       .then(response => {        
-      console.log('promise fulfilled')        
       setPersons(response.data)      
     })  
     }, [])  
-    console.log('render', persons.length, 'persons')
 
   return (
     <div>
@@ -33,8 +30,11 @@ const App = () => {
       <h2>Numbers</h2>
       <div>
         {showSearch? 
-        <Persons persons={persons.filter((person) => person.name.toLowerCase().includes(searchWord.toLowerCase()))}/>
-        :<Persons persons={persons}/>
+        <Persons 
+        persons={persons.filter((person) => person.name.toLowerCase().includes(searchWord.toLowerCase()))}
+        setPersons={setPersons}
+        />
+        :<Persons persons={persons} setPersons={setPersons}/>
       }
       </div>
     </div>
