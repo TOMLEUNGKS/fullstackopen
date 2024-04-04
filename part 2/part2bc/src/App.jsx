@@ -1,12 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SearchFilter from '../components/SearchFilter'
 import PersonForm from '../../part2a/components/PersonForm'
 import Persons from '../../part2a/components/Persons'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', id: 1 }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [searchWord, setSearchWord] = useState('')
   const [showSearch, setShowSearch] = useState(false)
 
@@ -14,6 +13,17 @@ const App = () => {
     setSearchWord(event.target.value)
     setShowSearch(true)
   }
+
+  useEffect(() => {
+    console.log('effect')    
+    axios      
+      .get('http://localhost:3001/persons')      
+      .then(response => {        
+      console.log('promise fulfilled')        
+      setPersons(response.data)      
+    })  
+    }, [])  
+    console.log('render', persons.length, 'persons')
 
   return (
     <div>
