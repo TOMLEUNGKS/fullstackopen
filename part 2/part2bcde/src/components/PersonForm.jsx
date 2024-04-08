@@ -1,9 +1,9 @@
-import axios from "axios"
-import { useState } from "react"
+import personService from '../services/persons'
 
-const PersonForm = ({persons, setPersons}) => {
-    const [newName, setNewName] = useState('')
-    const [newNum, setNewNum] = useState('')
+const PersonForm = ({persons, setPersons, 
+  setAddNotice, setNoticeName, setChangeNotice,
+  setErrorNotice,
+  newName, setNewName, newNum, setNewNum}) => {
     
     const addPerson= (event) => {
         event.preventDefault()
@@ -12,13 +12,19 @@ const PersonForm = ({persons, setPersons}) => {
           if (confirm) {
             const person = persons.find(p => p.name === newName)
             const changedPerson = {...person, number: newNum}
-            axios
-            .put('http://localhost:3001/persons/' + person.id, changedPerson)
+
+            personService
+            .update(person.id, changedPerson)
             .then(response => {
-              console.log("response.data", response.data)
-              setPersons(persons.map(p => p.id !== person.id ? p : response.data))
+              setPersons(persons.map(p => p.id !== person.id ? p : response))
+              setChangeNotice(true)
+              setNoticeName(newName)
               setNewName('')
               setNewNum('')
+            })
+            .catch(_ => {
+              setErrorNotice(true)
+              setNoticeName(newName)
             })
           } else return
           return
@@ -28,10 +34,13 @@ const PersonForm = ({persons, setPersons}) => {
           number: newNum,
           id: Date.now().toString(36)
         }
-        axios
-        .post('http://localhost:3001/persons', personObject)
+
+        personService
+        .create(personObject)
         .then(response => {
-          setPersons(persons.concat(response.data))
+          setPersons(persons.concat(response))
+          setAddNotice(true)
+          setNoticeName(newName)
           setNewName('')
           setNewNum('')
         })
@@ -44,7 +53,6 @@ const PersonForm = ({persons, setPersons}) => {
       const handleNumChange = (event) => {
         setNewNum(event.target.value)
       }
-
 
     return (
         <form onSubmit={addPerson}>
