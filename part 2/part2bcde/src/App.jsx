@@ -27,7 +27,10 @@ const App = () => {
       personService
       .remove(person.id)
       .then(response => {
+        console.log("response", response)
+        console.log("response.id", response.id)
         const updatedPersons = persons.filter((p) => p.id !== response.id)
+        console.log("updatedPersons", updatedPersons)
         setPersons(updatedPersons)
       })
       .catch(_ => {
