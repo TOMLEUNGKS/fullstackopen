@@ -38,16 +38,16 @@ const App = () => {
   const updatePerson = (person) => {
     const ok = window.confirm(`${newName} is already added to phonebook, replace the number?`)
     if (ok) {
-      
+      // console.log("person.id", person.id);
       personService.update(person.id, {...person, number: newNumber}).then((updatedPerson) => {
+        console.log("updatedPerson", updatedPerson);
         setPersons(persons.map(p => p.id !== person.id ? p :updatedPerson ))
         notifyWith(`phone number of ${person.name} updated!`)
       })
-      .catch(() => {
-        notifyWith(`${person.name} has already been removed`, 'error')
-        setPersons(persons.filter(p => p.id !== person.id))
+      .catch(error => {
+        notifyWith(`${error}`, 'error')
+        // setPersons(persons.filter(p => p.id !== person.id))
       })
-
       cleanForm()
     }
   }
@@ -70,6 +70,9 @@ const App = () => {
       notifyWith(`${createdPerson.name} added!`)
 
       cleanForm()
+    })
+    .catch(error => {
+      notifyWith(`${error.response.data.error}`, 'error')
     })
   }
 
