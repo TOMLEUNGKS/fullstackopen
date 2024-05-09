@@ -16,7 +16,7 @@ blogsRouter.get('/', async (request, response, next) => {
 blogsRouter.post('/', async (request, response, next) => {
     try {
         const body = request.body
-        console.log("request", request)
+        
         const decodedToken = jwt.verify(request.token, process.env.SECRET)  
         
         if (!decodedToken.id) {    
@@ -29,7 +29,7 @@ blogsRouter.post('/', async (request, response, next) => {
             title: body.title,
             author: body.author,
             url: body.url,
-            likes: body.likes,
+            likes: body.likes || 0,
             user: user._id
         })
 
